@@ -6,10 +6,10 @@
   }
 </script>
 
-<Edge let:path let:destroy edgeClick="{() => alert('Message data travels from sh to output.')}" step color="#111">
+<Edge let:path let:destroy edgeClick="{() => alert('Message data travels from sh to output.')}" color="#111">
   <path d={path} />
-  <button on:click={destroy} slot="label" style="">
-    <p style="padding: 0; margin: 0;">sh to output</p>
+  <button on:click={destroy} slot="label" style="background: #000; border: 0;">
+    <p style="padding: 0; margin: 0; color: #aaa;">sh to output</p>
   </button>
 </Edge>
 

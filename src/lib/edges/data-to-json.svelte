@@ -6,10 +6,10 @@
   }
 </script>
 
-<Edge let:path let:destroy edgeClick="{() => alert('Message data travels from data to json.')}" step color="#111">
+<Edge let:path let:destroy edgeClick="{() => alert('Message data travels from data to json.')}" color="#111">
   <path d={path} />
-  <button on:click={destroy} slot="label" style="">
-    <p style="padding: 0; margin: 0;">data to json</p>
+  <button on:click={destroy} slot="label" style="background: #000; border: 0;">
+    <p style="padding: 0; margin: 0; color: #aaa;">data to json</p>
   </button>
 </Edge>
 

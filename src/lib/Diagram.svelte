@@ -15,17 +15,19 @@
       positionX: 100,
 			positionY: 300,
       data: { label: "Resize node" },
-      dimensionWidth: 400,
+      dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
 			label: "FizzBuzz",
 			borderColor: "black",
+			active: 'code',
 			rows: [
 				{
 					inputAnchor: null,
 					value: `function main () {\n  return { hello: "world" };\n}`,
 					language: "typescript",
+					flow: ``,
 					outputAnchor: {
 						id: 'out-fizzbuzz-a',
 						connections: [['fizz', 'in-fizz-a']]
@@ -33,8 +35,9 @@
 				},
 				{
 					inputAnchor: null,
-					value: `inom hello world --key="value"`,
+					value: `inom console --log="D.dataToJson()"`,
 					language: "sh",
+					flow: ``,
 					outputAnchor: {
 						id: 'out-fizzbuzz-b',
 						connections: [['fizz', 'in-fizz-b']]
@@ -44,6 +47,7 @@
 					inputAnchor: null,
 					value: `function main (A) {\n  return A.dataToJson();\n}`,
 					language: "typescript",
+					flow: ``,
 					outputAnchor: {
 						id: 'out-fizzbuzz-c',
 						connections: [['buzz', 'in-buzz-c']]
@@ -53,27 +57,33 @@
 					inputAnchor: null,
 					value: "hello world",
 					language: "text",
+					flow: ``,
 					outputAnchor: null
 				},
 				{
 					inputAnchor: null,
-					value: `function main (D) {\n  return D.textToString();\n}`,
+					value: `function main (B, D) {\n  return B.shToOutput() + " " + D.textToString();\n}`,
 					language: "typescript",
-					outputAnchor: null
+					flow: ``,
+					outputAnchor: {
+						id: 'out-fizzbuzz-e',
+						connections: [['buzz', 'in-buzz-b']]
+					}
 				},
 			]
     },
     {
       id: 'fizz',
-      positionX: 700,
+      positionX: 800,
 			positionY: 100,
       data: { label: "Mixed Anchors" },
-      dimensionWidth: 400,
+      dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
 			label: "Fizz",
 			borderColor: "black",
+			active: 'code',
 			rows: [
 				{
 					inputAnchor: {
@@ -81,6 +91,7 @@
 					},
 					value: `{ "hello": "world" }`,
 					language: "json",
+					flow: ``,
 					outputAnchor: null
 				},
 				{
@@ -89,34 +100,38 @@
 					},
 					value: "hello world",
 					language: "sh",
+					flow: ``,
 					outputAnchor: null
 				},
 			]
     },
     {
       id: 'buzz',
-      positionX: 700,
+      positionX: 800,
 			positionY: 500,
       data: { label: "Mixed Anchors" },
-      dimensionWidth: 400,
+      dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
 			label: "Buzz",
 			borderColor: "black",
+			active: 'code',
 			rows: [
 				{
 					inputAnchor: null,
 					value: `<div test="true">\n  hello world\n</div>`,
 					language: "xml",
+					flow: ``,
 					outputAnchor: null
 				},
 				{
 					inputAnchor: {
 						id: 'in-buzz-b'
 					},
-					value: "hello world",
+					value: "hello world hello world",
 					language: "sh",
+					flow: ``,
 					outputAnchor: null
 				},
 				{
@@ -125,6 +140,7 @@
 					},
 					value: `{ "hello": "world" }`,
 					language: "json",
+					flow: ``,
 					outputAnchor: null
 				},
 			]
@@ -153,9 +169,13 @@
 			}}
 		>
 			<div class="table">
+				<div class="switch">
+					<button on:click={() => {node.active = 'code'}} class={node.active === 'code' ? 'selected' : ''}>code</button>
+					<button on:click={() => {node.active = 'flow'}} class={node.active === 'flow' ? 'selected' : ''}>flow</button>
+					<button on:click={() => {node.active = 'amqp'}} class={node.active === 'amqp' ? 'selected' : ''}>amqp</button>
+				</div>
 				<h1 class="header">
 					{node.label} 
-					<span style="float: right;">config / code</span>
 				</h1>
 				{#each node.rows as row}
 					<div class="row">
@@ -164,7 +184,7 @@
 								<Anchor id={row.inputAnchor.id} direction="west" connections={[]} output />
 							{/if}
 						</div>
-						<Code value={row.value} language={row.language} />
+						<Code active={node.active} flow={row.flow} value={row.value} language={row.language} />
 						<div class="output-anchors">
 							{#if row.outputAnchor !== null}
 								{#if row.language === 'xml'}
@@ -193,12 +213,25 @@
 	}
 
 	.table .row {
-		min-height: 30px;
+		min-height: 20px;
+		padding: 0.5em 0;
 		background: #202020;
 		border-bottom: 1px solid #333;
 		border-top: 1px solid #000;
 		align-items: center;
 		display: flex;
+	}
+
+	.table .switch {
+		float: right; 
+		padding: 0.5em;
+		border: none;
+	}
+
+	.table .switch .selected {
+		background: #111;
+		border: 1px solid #000;
+		color: #fff;
 	}
 
 	.table .header {

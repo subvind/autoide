@@ -11,26 +11,43 @@
   import "brace/mode/markdown";
   import "brace/theme/monokai";
   
+  export let active = "";
   export let value = "";
+  export let flow = "";
   export let language = "";
+  let text: any = null
+  let lang: any = null
+
+  $: active && toggle()
+
+  function toggle () {
+    if (active === 'code') {
+      text = value
+      lang = language
+    } else if (active === 'flow') {
+      text = flow
+      lang = "text"
+    }
+  }
 </script>
 
-
-<AceEditor
-  on:selectionChange={(obj) => console.log(obj.detail)}
-  on:paste={(obj) => console.log(obj.detail)}
-  on:input={(obj) => console.log(obj.detail)}
-  on:focus={() => console.log('focus')}
-  on:documentChange={(obj) => console.log(`document change : ${obj.detail}`)}
-  on:cut={() => console.log('cut')}
-  on:cursorChange={() => console.log('cursor change')}
-  on:copy={() => console.log('copy')}
-  on:init={(editor) => console.log(editor.detail)}
-  on:commandKey={(obj) => console.log(obj.detail)}
-  on:changeMode={(obj) => console.log(`change mode : ${obj.detail}`)}
-  on:blur={() => console.log('blur')}
-  width='100%'
-  height={`${value.split(/\r\n|\r|\n/).length * 16}px`}
-  lang={language}
-  theme="monokai"
-  value={value} />
+{#if text !== null}
+  <AceEditor
+    on:selectionChange={(obj) => console.log(obj.detail)}
+    on:paste={(obj) => console.log(obj.detail)}
+    on:input={(obj) => console.log(obj.detail)}
+    on:focus={() => console.log('focus')}
+    on:documentChange={(obj) => console.log(`document change : ${obj.detail}`)}
+    on:cut={() => console.log('cut')}
+    on:cursorChange={() => console.log('cursor change')}
+    on:copy={() => console.log('copy')}
+    on:init={(editor) => console.log(editor.detail)}
+    on:commandKey={(obj) => console.log(obj.detail)}
+    on:changeMode={(obj) => console.log(`change mode : ${obj.detail}`)}
+    on:blur={() => console.log('blur')}
+    width='100%'
+    height={`${text.split(/\r\n|\r|\n/).length * 16}px`}
+    lang={lang}
+    theme="monokai"
+    value={text} />
+  {/if}
