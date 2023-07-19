@@ -1,7 +1,10 @@
 <script lang="ts">
   import { Svelvet, Node, Anchor, Edge, Controls } from 'svelvet';
 
-	import MyEdge from '../lib/Edge.svelte'
+	import DataToJson from './edges/data-to-json.svelte'
+	import DataToXml from './edges/data-to-xml.svelte'
+	import ShToOutput from './edges/sh-to-output.svelte'
+	import Code from '../lib/Code.svelte'
 
   export let width: number;
   export let height: number;
@@ -12,7 +15,7 @@
       positionX: 100,
 			positionY: 300,
       data: { label: "Resize node" },
-      dimensionWidth: 200,
+      dimensionWidth: 400,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
@@ -21,38 +24,51 @@
 			rows: [
 				{
 					inputAnchor: null,
-					outputAnchor: null
-				},
-				{
-					inputAnchor: null,
+					value: `function main () {\n  return { hello: "world" };\n}`,
+					language: "typescript",
 					outputAnchor: {
-						id: 'out-fizz',
-						connections: [['fizz', 'in-fizz']]
+						id: 'out-fizzbuzz-a',
+						connections: [['fizz', 'in-fizz-a']]
 					}
 				},
 				{
 					inputAnchor: null,
+					value: `inom hello world --key="value"`,
+					language: "sh",
 					outputAnchor: {
-						id: 'out-buzz',
-						connections: [['buzz', 'in-buzz']]
+						id: 'out-fizzbuzz-b',
+						connections: [['fizz', 'in-fizz-b']]
 					}
 				},
 				{
 					inputAnchor: null,
+					value: `function main (A) {\n  return A.dataToJson();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-fizzbuzz-c',
+						connections: [['buzz', 'in-buzz-c']]
+					}
+				},
+				{
+					inputAnchor: null,
+					value: "hello world",
+					language: "text",
 					outputAnchor: null
 				},
 				{
 					inputAnchor: null,
+					value: `function main (D) {\n  return D.textToString();\n}`,
+					language: "typescript",
 					outputAnchor: null
 				},
 			]
     },
     {
       id: 'fizz',
-      positionX: 500,
+      positionX: 700,
 			positionY: 100,
       data: { label: "Mixed Anchors" },
-      dimensionWidth: 200,
+      dimensionWidth: 400,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
@@ -60,23 +76,29 @@
 			borderColor: "black",
 			rows: [
 				{
-					inputAnchor: null,
+					inputAnchor: {
+						id: 'in-fizz-a'
+					},
+					value: `{ "hello": "world" }`,
+					language: "json",
 					outputAnchor: null
 				},
 				{
 					inputAnchor: {
-						id: 'in-fizz'
+						id: 'in-fizz-b'
 					},
+					value: "hello world",
+					language: "sh",
 					outputAnchor: null
 				},
 			]
     },
     {
       id: 'buzz',
-      positionX: 500,
+      positionX: 700,
 			positionY: 500,
       data: { label: "Mixed Anchors" },
-      dimensionWidth: 200,
+      dimensionWidth: 400,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
@@ -85,16 +107,24 @@
 			rows: [
 				{
 					inputAnchor: null,
+					value: `<div test="true">\n  hello world\n</div>`,
+					language: "xml",
 					outputAnchor: null
 				},
 				{
 					inputAnchor: {
-						id: 'in-buzz'
+						id: 'in-buzz-b'
 					},
+					value: "hello world",
+					language: "sh",
 					outputAnchor: null
 				},
 				{
-					inputAnchor: null,
+					inputAnchor: {
+						id: 'in-buzz-c'
+					},
+					value: `{ "hello": "world" }`,
+					language: "json",
 					outputAnchor: null
 				},
 			]
@@ -118,19 +148,34 @@
 			on:disconnection={() => {
 				alert('node disconnected')
 			}}
+			on:duplicate={() => {
+				alert('node duplicated')
+			}}
 		>
 			<div class="table">
-				<h1 class="header">{node.label}</h1>
+				<h1 class="header">
+					{node.label} 
+					<span style="float: right;">config / code</span>
+				</h1>
 				{#each node.rows as row}
 					<div class="row">
 						<div class="input-anchors">
 							{#if row.inputAnchor !== null}
-								<Anchor id={row.inputAnchor.id} edge={MyEdge} direction="west" connections={[]} output />
+								<Anchor id={row.inputAnchor.id} direction="west" connections={[]} output />
 							{/if}
 						</div>
+						<Code value={row.value} language={row.language} />
 						<div class="output-anchors">
 							{#if row.outputAnchor !== null}
-								<Anchor id={row.outputAnchor.id} edge={MyEdge} direction="east" connections={row.outputAnchor.connections} output />
+								{#if row.language === 'xml'}
+									<Anchor id={row.outputAnchor.id} edge={DataToXml} direction="east" connections={row.outputAnchor.connections} output />
+								{:else if row.language === 'typescript'}
+									<Anchor id={row.outputAnchor.id} edge={DataToJson} direction="east" connections={row.outputAnchor.connections} output />
+								{:else if row.language === 'javascript'}
+									<Anchor id={row.outputAnchor.id} edge={DataToJson} direction="east" connections={row.outputAnchor.connections} output />
+								{:else if row.language === 'sh'}
+									<Anchor id={row.outputAnchor.id} edge={ShToOutput} direction="east" connections={row.outputAnchor.connections} output />
+								{/if}
 							{/if}
 						</div>
 					</div>
@@ -148,9 +193,10 @@
 	}
 
 	.table .row {
-		height: 50px;
-		background: #ccc;
-		border-bottom: 1px solid #777;
+		min-height: 30px;
+		background: #202020;
+		border-bottom: 1px solid #333;
+		border-top: 1px solid #000;
 		align-items: center;
 		display: flex;
 	}
@@ -161,17 +207,15 @@
 		background: #777;
 		color: #111;
 		font-weight: 100;
-		border-bottom: 1px solid #000;
-
 	}
 
 	.input-anchors {
 		position: fixed;
-		left: -5px;
+		left: -18px;
 	}
 	.output-anchors {
 		position: fixed;
-		right: -5px;
+		right: -18px;
 	}
 
 	:global(.output-anchors .anchor-wrapper) {

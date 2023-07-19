@@ -23,7 +23,11 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@codemirror/lang-javascript": "^6.1.9",
 		"@tauri-apps/api": "^1.4.0",
+		"prosemirror-svelte": "^0.2.4",
+		"svelte-ace": "^1.0.21",
+		"svelte-codemirror-editor": "^1.1.0",
 		"svelvet": "^8.0.8"
 	}
 }
