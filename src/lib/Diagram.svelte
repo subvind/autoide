@@ -13,21 +13,38 @@
 			positionY: 300,
       data: { label: "Resize node" },
       dimensionWidth: 200,
-      dimensionHeight: 200,
-      bgColor: "yellow",
-      textColor: "black",
+      dimensionHeight: 25,
+      bgColor: "black",
+      textColor: "white",
 			label: "FizzBuzz",
 			borderColor: "black",
-			inputAnchors: [],
-			outputAnchors: [
+			rows: [
 				{
-					id: 'out-fizz',
-					connections: [['fizz', 'in-fizz']]
+					inputAnchor: null,
+					outputAnchor: null
 				},
 				{
-					id: 'out-buzz',
-					connections: [['buzz', 'in-buzz']]
-				}
+					inputAnchor: null,
+					outputAnchor: {
+						id: 'out-fizz',
+						connections: [['fizz', 'in-fizz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					outputAnchor: {
+						id: 'out-buzz',
+						connections: [['buzz', 'in-buzz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					outputAnchor: null
+				},
+				{
+					inputAnchor: null,
+					outputAnchor: null
+				},
 			]
     },
     {
@@ -36,17 +53,23 @@
 			positionY: 100,
       data: { label: "Mixed Anchors" },
       dimensionWidth: 200,
-      dimensionHeight: 200,
-      bgColor: "red",
+      dimensionHeight: 25,
+      bgColor: "black",
       textColor: "white",
 			label: "Fizz",
 			borderColor: "black",
-			inputAnchors: [
+			rows: [
 				{
-					id: 'in-fizz'
+					inputAnchor: null,
+					outputAnchor: null
 				},
-			],
-			outputAnchors: []
+				{
+					inputAnchor: {
+						id: 'in-fizz'
+					},
+					outputAnchor: null
+				},
+			]
     },
     {
       id: 'buzz',
@@ -54,17 +77,27 @@
 			positionY: 500,
       data: { label: "Mixed Anchors" },
       dimensionWidth: 200,
-      dimensionHeight: 200,
-      bgColor: "blue",
+      dimensionHeight: 25,
+      bgColor: "black",
       textColor: "white",
 			label: "Buzz",
 			borderColor: "black",
-			inputAnchors: [
+			rows: [
 				{
-					id: 'in-buzz'
+					inputAnchor: null,
+					outputAnchor: null
 				},
-			],
-			outputAnchors: []
+				{
+					inputAnchor: {
+						id: 'in-buzz'
+					},
+					outputAnchor: null
+				},
+				{
+					inputAnchor: null,
+					outputAnchor: null
+				},
+			]
     }
   ];
 </script>
@@ -86,19 +119,22 @@
 				alert('node disconnected')
 			}}
 		>
-
-			<div style="width: 100%;">
-				<div class="input-anchors">
-					{#each node.inputAnchors as anchor}
-						<Anchor id={anchor.id} edge={MyEdge} direction="west" connections={[]} output />
-					{/each}
-				</div>
-				<h1>{node.label}</h1>	
-				<div class="output-anchors">
-					{#each node.outputAnchors as anchor}
-						<Anchor id={anchor.id} edge={MyEdge} direction="east" connections={anchor.connections} output />
-					{/each}
-				</div>
+			<div class="table">
+				<h1 class="header">{node.label}</h1>
+				{#each node.rows as row}
+					<div class="row">
+						<div class="input-anchors">
+							{#if row.inputAnchor !== null}
+								<Anchor id={row.inputAnchor.id} edge={MyEdge} direction="west" connections={[]} output />
+							{/if}
+						</div>
+						<div class="output-anchors">
+							{#if row.outputAnchor !== null}
+								<Anchor id={row.outputAnchor.id} edge={MyEdge} direction="east" connections={row.outputAnchor.connections} output />
+							{/if}
+						</div>
+					</div>
+				{/each}
 			</div>
 		</Node>
 	{/each}
@@ -106,8 +142,32 @@
 </Svelvet>
 
 <style>
+	.table {
+		width: 100%;
+		border: 1px solid #000;
+	}
+
+	.table .row {
+		height: 50px;
+		background: #ccc;
+		border-bottom: 1px solid #777;
+		align-items: center;
+		display: flex;
+	}
+
+	.table .header {
+		margin: 0;
+		padding: 0.5em;
+		background: #777;
+		color: #111;
+		font-weight: 100;
+		border-bottom: 1px solid #000;
+
+	}
+
 	.input-anchors {
-		float: left;
+		position: fixed;
+		left: -5px;
 	}
 	.output-anchors {
 		position: fixed;
@@ -117,5 +177,9 @@
 	:global(.output-anchors .anchor-wrapper) {
 		margin-top: 5px;
 		margin-bottom: 5px;
+	}
+
+	:global(.svelvet-node) {
+		align-items: start !important;
 	}
 </style>
