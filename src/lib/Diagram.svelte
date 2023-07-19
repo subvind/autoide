@@ -35,7 +35,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `inom console --log="D.dataToJson()"`,
+					value: `inom console --log="D.textToString()"`,
 					language: "sh",
 					flow: ``,
 					outputAnchor: {
@@ -172,7 +172,8 @@
 				<div class="switch">
 					<button on:click={() => {node.active = 'code'}} class={node.active === 'code' ? 'selected' : ''}>code</button>
 					<button on:click={() => {node.active = 'flow'}} class={node.active === 'flow' ? 'selected' : ''}>flow</button>
-					<button on:click={() => {node.active = 'amqp'}} class={node.active === 'amqp' ? 'selected' : ''}>amqp</button>
+					<button on:click={() => {node.active = 'imports'}} class={node.active === 'imports' ? 'selected' : ''}>imports</button>
+					<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
 				</div>
 				<h1 class="header">
 					{node.label} 
@@ -225,13 +226,18 @@
 	.table .switch {
 		float: right; 
 		padding: 0.5em;
-		border: none;
 	}
 
-	.table .switch .selected {
+	.table .switch button {
 		background: #111;
-		border: 1px solid #000;
 		color: #fff;
+		border: 1px solid #000;
+	}
+	
+	.table .switch .selected {
+		background: #fff;
+		color: #111;
+		border: none;
 	}
 
 	.table .header {
