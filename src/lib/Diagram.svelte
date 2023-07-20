@@ -22,7 +22,7 @@
 			label: "FizzBuzz",
 			borderColor: "black",
 			active: 'code',
-			rows: [
+			files: [
 				{
 					inputAnchor: null,
 					value: `function main () {\n  return { hello: "world" };\n}`,
@@ -70,7 +70,11 @@
 						connections: [['buzz', 'in-buzz-b']]
 					}
 				},
-			]
+			],
+			moduleAnchor: {
+				id: 'out-fizzbuzz',
+				connections: [['main', 'in-main-a']]
+			}
     },
     {
       id: 'fizz',
@@ -84,7 +88,7 @@
 			label: "Fizz",
 			borderColor: "black",
 			active: 'code',
-			rows: [
+			files: [
 				{
 					inputAnchor: {
 						id: 'in-fizz-a'
@@ -103,7 +107,11 @@
 					flow: ``,
 					outputAnchor: null
 				},
-			]
+			],
+			moduleAnchor: {
+				id: 'out-fizz',
+				connections: [['main', 'in-main-b']]
+			}
     },
     {
       id: 'buzz',
@@ -117,7 +125,7 @@
 			label: "Buzz",
 			borderColor: "black",
 			active: 'code',
-			rows: [
+			files: [
 				{
 					inputAnchor: null,
 					value: `<div test="true">\n  hello world\n</div>`,
@@ -143,12 +151,19 @@
 					flow: ``,
 					outputAnchor: null
 				},
-			]
+			],
+			moduleAnchor: {
+				id: 'out-buzz',
+				connections: [['main', 'in-main-c']]
+			}
     }
   ];
 </script>
 
 <Svelvet width={width} height={height} theme="dark" initialZoom={1} minimap nodeCreate={true}>
+	<!-- nodes -->
+	<!-- nodes -->
+	<!-- nodes -->
 	{#each nodes as node}
 		<Node 
 			id={node.id} 
@@ -178,29 +193,34 @@
 				<h1 class="header">
 					{node.label} 
 				</h1>
-				{#each node.rows as row}
-					<div class="row">
+				{#each node.files as file}
+					<div class="file">
 						<div class="input-anchors">
-							{#if row.inputAnchor !== null}
-								<Anchor id={row.inputAnchor.id} direction="west" connections={[]} output />
+							{#if file.inputAnchor !== null}
+								<Anchor id={file.inputAnchor.id} direction="west" connections={[]} output />
 							{/if}
 						</div>
-						<Code active={node.active} flow={row.flow} value={row.value} language={row.language} />
+						<Code active={node.active} flow={file.flow} value={file.value} language={file.language} />
 						<div class="output-anchors">
-							{#if row.outputAnchor !== null}
-								{#if row.language === 'xml'}
-									<Anchor id={row.outputAnchor.id} edge={DataToXml} direction="east" connections={row.outputAnchor.connections} output />
-								{:else if row.language === 'typescript'}
-									<Anchor id={row.outputAnchor.id} edge={DataToJson} direction="east" connections={row.outputAnchor.connections} output />
-								{:else if row.language === 'javascript'}
-									<Anchor id={row.outputAnchor.id} edge={DataToJson} direction="east" connections={row.outputAnchor.connections} output />
-								{:else if row.language === 'sh'}
-									<Anchor id={row.outputAnchor.id} edge={ShToOutput} direction="east" connections={row.outputAnchor.connections} output />
+							{#if file.outputAnchor !== null}
+								{#if file.language === 'xml'}
+									<Anchor id={file.outputAnchor.id} edge={DataToXml} direction="east" connections={file.outputAnchor.connections} output />
+								{:else if file.language === 'typescript'}
+									<Anchor id={file.outputAnchor.id} edge={DataToJson} direction="east" connections={file.outputAnchor.connections} output />
+								{:else if file.language === 'javascript'}
+									<Anchor id={file.outputAnchor.id} edge={DataToJson} direction="east" connections={file.outputAnchor.connections} output />
+								{:else if file.language === 'sh'}
+									<Anchor id={file.outputAnchor.id} edge={ShToOutput} direction="east" connections={file.outputAnchor.connections} output />
 								{/if}
 							{/if}
 						</div>
 					</div>
 				{/each}
+				<div class="footer">
+					<div style="flex: 1;"></div>
+					<Anchor id={node.moduleAnchor.id} direction="south" connections={[]} output />
+					<div style="flex: 1;"></div>
+				</div>
 			</div>
 		</Node>
 	{/each}
@@ -213,7 +233,7 @@
 		border: 1px solid #000;
 	}
 
-	.table .row {
+	.table .file {
 		min-height: 20px;
 		padding: 0.5em 0;
 		background: #202020;
@@ -246,6 +266,14 @@
 		background: #777;
 		color: #111;
 		font-weight: 100;
+	}
+
+	.table .footer {
+		width: 100%;
+		display: flex;
+		height: 0;
+		position: relative;
+		bottom: -8px;
 	}
 
 	.input-anchors {
