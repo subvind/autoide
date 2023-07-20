@@ -9,6 +9,15 @@
   export let width: number;
   export let height: number;
 
+	const exampleFlow = `<file id="A" lang="typescript">
+	<inputs>
+		<anchor node="fizz" file="A"></anchor>
+	</inputs>
+	<outputs>
+		<anchor node="fizz" file="A"></anchor>
+	</outputs>
+</file>`
+
 	const nodes: Array<any> = [
     {
       id: 1,
@@ -27,7 +36,7 @@
 					inputAnchor: null,
 					value: `function main () {\n  return { hello: "world" };\n}`,
 					language: "typescript",
-					flow: ``,
+					flow: exampleFlow,
 					outputAnchor: {
 						id: 'out-fizzbuzz-a',
 						connections: [['fizz', 'in-fizz-a']]
@@ -160,7 +169,7 @@
   ];
 </script>
 
-<Svelvet width={width} height={height} theme="dark" initialZoom={1} minimap nodeCreate={true}>
+<Svelvet width={width} height={height} theme="dark" initialZoom={1} minimap nodeCreate={true} trackpadPan={true}>
 	<!-- nodes -->
 	<!-- nodes -->
 	<!-- nodes -->

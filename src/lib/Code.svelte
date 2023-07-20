@@ -17,8 +17,10 @@
   export let language = "";
   let text: any = null
   let lang: any = null
+  let lines: number = 1
 
   $: active && toggle()
+  $: text && watchEdit(text)
 
   function toggle () {
     if (active === 'code') {
@@ -26,16 +28,29 @@
       lang = language
     } else if (active === 'flow') {
       text = flow
-      lang = "text"
+      lang = "xml"
     }
   }
+
+  function watchEdit (text: string) {
+    let count = text.split(/\r\n|\r|\n/).length
+    lines = limitNumberWithinRange(count, 1, 10)
+  }
+
+  function limitNumberWithinRange(num, min, max) {
+    const MIN = min || 1;
+    const MAX = max || 20;
+    const parsed = parseInt(num)
+    return Math.min(Math.max(parsed, MIN), MAX)
+  }
+
 </script>
 
 {#if text !== null}
   <AceEditor
     on:selectionChange={(obj) => console.log(obj.detail)}
     on:paste={(obj) => console.log(obj.detail)}
-    on:input={(obj) => console.log(obj.detail)}
+    on:input={(obj) => watchEdit(obj.detail)}
     on:focus={() => console.log('focus')}
     on:documentChange={(obj) => console.log(`document change : ${obj.detail}`)}
     on:cut={() => console.log('cut')}
@@ -46,7 +61,7 @@
     on:changeMode={(obj) => console.log(`change mode : ${obj.detail}`)}
     on:blur={() => console.log('blur')}
     width='100%'
-    height={`${text.split(/\r\n|\r|\n/).length * 16}px`}
+    height={`${lines * 16}px`}
     lang={lang}
     theme="monokai"
     value={text} />
