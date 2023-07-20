@@ -4,6 +4,7 @@
 	import DataToJson from './edges/data-to-json.svelte'
 	import DataToXml from './edges/data-to-xml.svelte'
 	import ShToOutput from './edges/sh-to-output.svelte'
+	import RunCode from './edges/run-code.svelte'
 	import Code from '../lib/Code.svelte'
 
   export let width: number;
@@ -18,22 +19,84 @@
 	</outputs>
 </file>`
 
+	const exampleMain = `function main (fizzbuzz, fizz, buzz) {
+  let report = [];
+  let that = { hello: "world" };
+  for (let i = 0; i < 100; i++) {
+    if (i%15) {
+      report.push(fizzbuzz(that));
+    } else if (i%3) {
+      report.push(fizz(that));
+    } else if (i%5) {
+      report.push(buzz(that));
+    }
+  }
+  console.log(report);
+}`
+
 	const nodes: Array<any> = [
     {
-      id: 1,
+      id: 'main',
+			kind: 'main',
+      positionX: 100,
+			positionY: -300,
+      dimensionWidth: 475,
+      dimensionHeight: 25,
+      bgColor: "black",
+      textColor: "white",
+			borderColor: "black",
+			active: 'nodes',
+			files: [
+				{
+					inputAnchor: null,
+					value: exampleMain,
+					language: "typescript",
+					outputAnchor: null
+				},
+				{
+					inputAnchor: null,
+					value: `function fizzbuzz (args, files) {\n  return files.F.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-main-a',
+						connections: [['fizzbuzz', 'link-fizzbuzz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					value: `function fizz (args, files) {\n  return files.C.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-main-b',
+						connections: [['fizz', 'link-fizz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					value: `function buzz (args, files) {\n  return files.D.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-main-c',
+						connections: [['buzz', 'link-buzz']]
+					}
+				},
+			]
+		},
+    {
+      id: 'fizzbuzz',
+			kind: 'block',
       positionX: 100,
 			positionY: 300,
       dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
-			label: "FizzBuzz",
 			borderColor: "black",
 			active: 'code',
 			files: [
 				{
 					inputAnchor: null,
-					value: `function main () {\n  return { hello: "world" };\n}`,
+					value: `function main () {\n  return args.that;\n}`,
 					language: "typescript",
 					flow: exampleFlow,
 					outputAnchor: {
@@ -43,7 +106,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `inom console --log="D.textToString()"`,
+					value: `inom console --log="hello world"`,
 					language: "sh",
 					flow: ``,
 					outputAnchor: {
@@ -78,21 +141,28 @@
 						connections: [['buzz', 'in-buzz-b']]
 					}
 				},
+				{
+					inputAnchor: null,
+					value: `fizzbuzz`,
+					language: "text",
+					flow: ``,
+					outputAnchor: null
+				},
 			],
 			moduleAnchor: {
-				id: 'out-fizzbuzz',
+				id: 'link-fizzbuzz',
 				connections: [['main', 'in-main-a']]
 			}
     },
     {
       id: 'fizz',
+			kind: 'block',
       positionX: 800,
 			positionY: 100,
       dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
-			label: "Fizz",
 			borderColor: "black",
 			active: 'code',
 			files: [
@@ -114,21 +184,28 @@
 					flow: ``,
 					outputAnchor: null
 				},
+				{
+					inputAnchor: null,
+					value: "fizz",
+					language: "text",
+					flow: ``,
+					outputAnchor: null
+				},
 			],
 			moduleAnchor: {
-				id: 'out-fizz',
+				id: 'link-fizz',
 				connections: [['main', 'in-main-b']]
 			}
     },
     {
       id: 'buzz',
+			kind: 'block',
       positionX: 800,
 			positionY: 500,
       dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
       textColor: "white",
-			label: "Buzz",
 			borderColor: "black",
 			active: 'code',
 			files: [
@@ -141,15 +218,6 @@
 				},
 				{
 					inputAnchor: {
-						id: 'in-buzz-b'
-					},
-					value: "hello world hello world",
-					language: "sh",
-					flow: ``,
-					outputAnchor: null
-				},
-				{
-					inputAnchor: {
 						id: 'in-buzz-c'
 					},
 					value: `{ "hello": "world" }`,
@@ -157,9 +225,25 @@
 					flow: ``,
 					outputAnchor: null
 				},
+				{
+					inputAnchor: {
+						id: 'in-buzz-b'
+					},
+					value: "hello world",
+					language: "sh",
+					flow: ``,
+					outputAnchor: null
+				},
+				{
+					inputAnchor: null,
+					value: "buzz",
+					language: "text",
+					flow: ``,
+					outputAnchor: null
+				},
 			],
 			moduleAnchor: {
-				id: 'out-buzz',
+				id: 'link-buzz',
 				connections: [['main', 'in-main-c']]
 			}
     }
@@ -190,14 +274,31 @@
 			}}
 		>
 			<div class="table">
+				{#if node.kind !== 'main'}
+					<div class="config">
+						<div style="flex: 1;"></div>
+						<Anchor id={node.moduleAnchor.id} direction="north" connections={[]} output />
+						<div style="flex: 1;"></div>
+					</div>
+				{/if}
 				<div class="switch">
-					<button on:click={() => {node.active = 'code'}} class={node.active === 'code' ? 'selected' : ''}>code</button>
-					<button on:click={() => {node.active = 'flow'}} class={node.active === 'flow' ? 'selected' : ''}>flow</button>
-					<button on:click={() => {node.active = 'imports'}} class={node.active === 'imports' ? 'selected' : ''}>imports</button>
-					<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
+
+					{#if node.kind === 'main'}
+						<button on:click={() => {node.active = 'nodes'}} class={node.active === 'nodes' ? 'selected' : ''}>nodes</button>
+						<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
+					{:else if node.kind === 'block'}
+						<button on:click={() => {node.active = 'code'}} class={node.active === 'code' ? 'selected' : ''}>code</button>
+						<button on:click={() => {node.active = 'flow'}} class={node.active === 'flow' ? 'selected' : ''}>flow</button>
+						<button on:click={() => {node.active = 'imports'}} class={node.active === 'imports' ? 'selected' : ''}>imports</button>
+						<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
+					{/if}
 				</div>
 				<h1 class="header">
-					{node.label} 
+					{#if node.kind === 'main'}
+						[{node.id}]
+					{:else if node.kind === 'block'}
+						&#123;{node.id}&#125;
+					{/if}
 				</h1>
 				{#each node.files as file}
 					<div class="file">
@@ -209,7 +310,9 @@
 						<Code active={node.active} flow={file.flow} value={file.value} language={file.language} />
 						<div class="output-anchors">
 							{#if file.outputAnchor !== null}
-								{#if file.language === 'xml'}
+								{#if node.kind === 'main'}
+									<Anchor id={file.outputAnchor.id} edge={RunCode} direction="east" connections={file.outputAnchor.connections} output />
+								{:else if file.language === 'xml'}
 									<Anchor id={file.outputAnchor.id} edge={DataToXml} direction="east" connections={file.outputAnchor.connections} output />
 								{:else if file.language === 'typescript'}
 									<Anchor id={file.outputAnchor.id} edge={DataToJson} direction="east" connections={file.outputAnchor.connections} output />
@@ -222,11 +325,6 @@
 						</div>
 					</div>
 				{/each}
-				<div class="footer">
-					<div style="flex: 1;"></div>
-					<Anchor id={node.moduleAnchor.id} direction="south" connections={[]} output />
-					<div style="flex: 1;"></div>
-				</div>
 			</div>
 		</Node>
 	{/each}
@@ -274,12 +372,12 @@
 		font-weight: 100;
 	}
 
-	.table .footer {
+	.table .config {
 		width: 100%;
 		display: flex;
 		height: 0;
 		position: relative;
-		bottom: -8px;
+		top: -18px;
 	}
 
 	.input-anchors {

@@ -23,7 +23,10 @@
   $: text && watchEdit(text)
 
   function toggle () {
-    if (active === 'code') {
+    if (active === 'nodes') {
+      text = value
+      lang = language
+    } else if (active === 'code') {
       text = value
       lang = language
     } else if (active === 'flow') {
@@ -34,7 +37,7 @@
 
   function watchEdit (text: string) {
     let count = text.split(/\r\n|\r|\n/).length
-    lines = limitNumberWithinRange(count, 1, 10)
+    lines = limitNumberWithinRange(count, 1, 15)
   }
 
   function limitNumberWithinRange(num, min, max) {
