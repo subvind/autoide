@@ -15,7 +15,7 @@
 
 <style>
 	path {
-		stroke: orange;
+		stroke: black;
 		stroke-width: 4px;
 	}
 </style>

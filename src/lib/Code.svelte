@@ -26,7 +26,7 @@
     if (active === 'nodes') {
       text = value
       lang = language
-    } else if (active === 'code') {
+    } else if (active === 'files') {
       text = value
       lang = language
     } else if (active === 'flow') {

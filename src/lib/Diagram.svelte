@@ -92,11 +92,11 @@
       bgColor: "black",
       textColor: "white",
 			borderColor: "black",
-			active: 'code',
+			active: 'files',
 			files: [
 				{
 					inputAnchor: null,
-					value: `function main () {\n  return args.that;\n}`,
+					value: `function run () {\n  return args.that;\n}`,
 					language: "typescript",
 					flow: exampleFlow,
 					outputAnchor: {
@@ -116,7 +116,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function main (A) {\n  return A.dataToJson();\n}`,
+					value: `function run (A) {\n  return A.dataToJson();\n}`,
 					language: "typescript",
 					flow: ``,
 					outputAnchor: {
@@ -133,7 +133,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function main (B, D) {\n  return B.shToOutput() + " " + D.textToString();\n}`,
+					value: `function run (C) {\n  return C.dataToJson();\n}`,
 					language: "typescript",
 					flow: ``,
 					outputAnchor: {
@@ -164,7 +164,7 @@
       bgColor: "black",
       textColor: "white",
 			borderColor: "black",
-			active: 'code',
+			active: 'files',
 			files: [
 				{
 					inputAnchor: {
@@ -207,7 +207,7 @@
       bgColor: "black",
       textColor: "white",
 			borderColor: "black",
-			active: 'code',
+			active: 'files',
 			files: [
 				{
 					inputAnchor: null,
@@ -287,7 +287,7 @@
 						<button on:click={() => {node.active = 'nodes'}} class={node.active === 'nodes' ? 'selected' : ''}>nodes</button>
 						<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
 					{:else if node.kind === 'block'}
-						<button on:click={() => {node.active = 'code'}} class={node.active === 'code' ? 'selected' : ''}>code</button>
+						<button on:click={() => {node.active = 'files'}} class={node.active === 'files' ? 'selected' : ''}>files</button>
 						<button on:click={() => {node.active = 'flow'}} class={node.active === 'flow' ? 'selected' : ''}>flow</button>
 						<button on:click={() => {node.active = 'imports'}} class={node.active === 'imports' ? 'selected' : ''}>imports</button>
 						<button on:click={() => {node.active = 'order'}} class={node.active === 'order' ? 'selected' : ''}>order</button>
