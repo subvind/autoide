@@ -19,7 +19,7 @@
 	</outputs>
 </file>`
 
-	const exampleMain = `function main (fizzbuzz, fizz, buzz) {
+	const demoMain = `function main (fizzbuzz, fizz, buzz) {
   let report = [];
   let that = { hello: "world" };
   for (let i = 0; i < 100; i++) {
@@ -34,12 +34,20 @@
   console.log(report);
 }`
 
+	const exampleMain = `function main (fizzbuzz, fizz, buzz) {
+  let that = { hello: "world" };
+  setInterval(() => {
+    console.log(fizzbuzz(that));
+    console.log(fizz(that), buzz(that));
+  }, 1000);
+}`
+
 	const nodes: Array<any> = [
     {
-      id: 'main',
+      id: 'example',
 			kind: 'main',
-      positionX: 100,
-			positionY: -300,
+      positionX: 800,
+			positionY: -500,
       dimensionWidth: 475,
       dimensionHeight: 25,
       bgColor: "black",
@@ -55,10 +63,57 @@
 				},
 				{
 					inputAnchor: null,
+					value: `function fizzbuzz (args, files) {\n  return files.D.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-example-a',
+						connections: [['fizzbuzz', 'link-fizzbuzz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					value: `function fizz (args, files) {\n  return files.B.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-example-b',
+						connections: [['fizz', 'link-fizz']]
+					}
+				},
+				{
+					inputAnchor: null,
+					value: `function buzz (args, files) {\n  return files.C.textToString();\n}`,
+					language: "typescript",
+					outputAnchor: {
+						id: 'out-example-c',
+						connections: [['buzz', 'link-buzz']]
+					}
+				},
+			]
+		},
+    {
+      id: 'demo',
+			kind: 'main',
+      positionX: 100,
+			positionY: -300,
+      dimensionWidth: 475,
+      dimensionHeight: 25,
+      bgColor: "black",
+      textColor: "white",
+			borderColor: "black",
+			active: 'nodes',
+			files: [
+				{
+					inputAnchor: null,
+					value: demoMain,
+					language: "typescript",
+					outputAnchor: null
+				},
+				{
+					inputAnchor: null,
 					value: `function fizzbuzz (args, files) {\n  return files.F.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
-						id: 'out-main-a',
+						id: 'out-demo-a',
 						connections: [['fizzbuzz', 'link-fizzbuzz']]
 					}
 				},
@@ -67,7 +122,7 @@
 					value: `function fizz (args, files) {\n  return files.C.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
-						id: 'out-main-b',
+						id: 'out-demo-b',
 						connections: [['fizz', 'link-fizz']]
 					}
 				},
@@ -76,7 +131,7 @@
 					value: `function buzz (args, files) {\n  return files.D.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
-						id: 'out-main-c',
+						id: 'out-demo-c',
 						connections: [['buzz', 'link-buzz']]
 					}
 				},
