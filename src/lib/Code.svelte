@@ -37,7 +37,7 @@
 
   function watchEdit (text: string) {
     let count = text.split(/\r\n|\r|\n/).length
-    lines = limitNumberWithinRange(count, 1, 15)
+    lines = limitNumberWithinRange(count, 1, 20)
   }
 
   function limitNumberWithinRange(num, min, max) {

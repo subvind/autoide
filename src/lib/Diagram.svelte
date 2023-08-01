@@ -19,32 +19,36 @@
 	</outputs>
 </file>`
 
-	const demoMain = `function main (fizzbuzz, fizz, buzz) {
+	const demoMain = `let event = "customer:created";
+let data = undefined; // { hello: "world" };
+
+function main (fizzbuzz, fizz, buzz) {
   let report = [];
-  let that = { hello: "world" };
   for (let i = 0; i < 100; i++) {
     if (i%15) {
-      report.push(fizzbuzz(that));
+      report.push(fizzbuzz(data));
     } else if (i%3) {
-      report.push(fizz(that));
+      report.push(fizz(data));
     } else if (i%5) {
-      report.push(buzz(that));
+      report.push(buzz(data));
     }
   }
   console.log(report);
 }`
 
-	const exampleMain = `function main (fizzbuzz, fizz, buzz) {
-  let that = { hello: "world" };
+	const exampleMain = `let event = "product:order_placed";
+let data = undefined; // { hello: "world" };
+
+function main (fizzbuzz, fizz, buzz) {
   setInterval(() => {
-    console.log(fizzbuzz(that));
-    console.log(fizz(that), buzz(that));
+    console.log(fizzbuzz(data));
+    console.log(fizz(data), buzz(data));
   }, 1000);
 }`
 
 	const nodes: Array<any> = [
     {
-      id: 'example',
+      id: 'product:order_placed',
 			kind: 'main',
       positionX: 800,
 			positionY: -500,
@@ -63,7 +67,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function fizzbuzz (args, files) {\n  return files.D.textToString();\n}`,
+					value: `function fizzbuzz (req, res) {\n  return res.D.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-example-a',
@@ -72,7 +76,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function fizz (args, files) {\n  return files.B.textToString();\n}`,
+					value: `function fizz (req, res) {\n  return res.B.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-example-b',
@@ -81,7 +85,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function buzz (args, files) {\n  return files.C.textToString();\n}`,
+					value: `function buzz (req, res) {\n  return res.C.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-example-c',
@@ -91,7 +95,7 @@
 			]
 		},
     {
-      id: 'demo',
+      id: 'customer:created',
 			kind: 'main',
       positionX: 100,
 			positionY: -300,
@@ -110,7 +114,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function fizzbuzz (args, files) {\n  return files.F.textToString();\n}`,
+					value: `function fizzbuzz (req, res) {\n  return res.F.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-demo-a',
@@ -119,7 +123,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function fizz (args, files) {\n  return files.C.textToString();\n}`,
+					value: `function fizz (req, res) {\n  return res.C.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-demo-b',
@@ -128,7 +132,7 @@
 				},
 				{
 					inputAnchor: null,
-					value: `function buzz (args, files) {\n  return files.D.textToString();\n}`,
+					value: `function buzz (req, res) {\n  return res.D.textToString();\n}`,
 					language: "typescript",
 					outputAnchor: {
 						id: 'out-demo-c',
@@ -151,7 +155,7 @@
 			files: [
 				{
 					inputAnchor: null,
-					value: `function run () {\n  return args.that;\n}`,
+					value: `function run () {\n  return req;\n}`,
 					language: "typescript",
 					flow: exampleFlow,
 					outputAnchor: {
@@ -305,7 +309,7 @@
   ];
 </script>
 
-<Svelvet width={width} height={height} theme="dark" initialZoom={1} minimap nodeCreate={true} trackpadPan={true}>
+<Svelvet width={width} height={height} theme="dark" translation={{ x: -50, y: 550 }} initialZoom={1} minimap nodeCreate={true} trackpadPan={true}>
 	<!-- nodes -->
 	<!-- nodes -->
 	<!-- nodes -->
